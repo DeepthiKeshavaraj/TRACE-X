@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}TRACE-X — Project Scope & Architecture{% endblock %}
+{% block page_title %}Project Scope & Pipeline Architecture{% endblock %}
+
+{% block content %}
+<!-- Section 1: Implemented Concepts Summary -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-12">
+        <div class="card bg-dark-card border-secondary-dark">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-circle-check text-success me-2"></i> Implemented Concepts (Active)
+                </h6>
+                <span class="badge bg-success px-3 py-1">6 Active Concepts</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4 col-lg-2">
+                        <div class="p-3 bg-darker rounded border border-cyan d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa-solid fa-brain text-cyan me-2"></i>
+                                <strong class="text-white">1. Text Classification</strong>
+                            </div>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-2">
+                        <div class="p-3 bg-darker rounded border border-purple d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa-solid fa-microphone text-purple me-2"></i>
+                                <strong class="text-white">2. Speech Processing</strong>
+                            </div>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-2">
+                        <div class="p-3 bg-darker rounded border border-indigo d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa-solid fa-language text-indigo me-2"></i>
+                                <strong class="text-white">3. Multilingual NLP</strong>
+                            </div>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-2">
+                        <div class="p-3 bg-darker rounded border border-amber d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa-solid fa-tags text-amber me-2"></i>
+                                <strong class="text-white">4. Named Entity Recognition</strong>
+                            </div>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-2">
+                        <div class="p-3 bg-darker rounded border border-success d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa-solid fa-circle-question text-success me-2"></i>
+                                <strong class="text-white">5. Question Answering</strong>
+                            </div>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-2">
+                        <div class="p-3 bg-darker rounded border border-info d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa-solid fa-comments text-info me-2"></i>
+                                <strong class="text-white">6. Conversational AI</strong>
+                            </div>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Visual Multi-Source Execution Pipeline Architecture -->
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-dark-card border-secondary-dark">
+            <div class="card-header bg-dark-header border-secondary-dark">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-diagram-project text-cyan me-2"></i> TRACE-X Multi-Source Pipeline Architecture
+                </h6>
+            </div>
+            <div class="card-body py-4">
+                <div class="pipeline-container justify-content-center">
+                    <div class="pipeline-node node-input">
+                        <div class="node-icon"><i class="fa-solid fa-folder-open"></i></div>
+                        <div class="node-title">Multi-Source Evidence</div>
+                        <div class="node-desc">Text, Audio, Images, Files</div>
+                    </div>
+
+                    <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+                    <div class="pipeline-node">
+                        <div class="node-icon"><i class="fa-solid fa-microphone"></i></div>
+                        <div class="node-title">Speech Processing</div>
+                        <div class="node-desc">Transcription & Classification</div>
+                    </div>
+
+                    <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+                    <div class="pipeline-node">
+                        <div class="node-icon"><i class="fa-solid fa-language"></i></div>
+                        <div class="node-title">Multilingual NLP</div>
+                        <div class="node-desc">Detect & Translate</div>
+                    </div>
+
+                    <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+                    <div class="pipeline-node node-active">
+                        <div class="node-icon"><i class="fa-solid fa-tags"></i></div>
+                        <div class="node-title">Named Entity Recognition</div>
+                        <div class="node-desc">CRF / CoNLL-2003</div>
+                    </div>
+
+                    <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+                    <div class="pipeline-node node-active">
+                        <div class="node-icon"><i class="fa-solid fa-brain"></i></div>
+                        <div class="node-title">Text Classification</div>
+                        <div class="node-desc">Evidence Categorization</div>
+                    </div>
+
+                    <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+                    <div class="pipeline-node node-active">
+                        <div class="node-icon"><i class="fa-solid fa-circle-question"></i></div>
+                        <div class="node-title">Question Answering</div>
+                        <div class="node-desc">Extractive Evidence QA</div>
+                    </div>
+
+                    <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+                    <div class="pipeline-node node-active">
+                        <div class="node-icon"><i class="fa-solid fa-comments"></i></div>
+                        <div class="node-title">Conversational AI</div>
+                        <div class="node-desc">Interactive Evidence Bot</div>
+                    </div>
+
+                    <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+                    <div class="pipeline-node node-output">
+                        <div class="node-icon"><i class="fa-solid fa-bullseye"></i></div>
+                        <div class="node-title">Structured Intelligence</div>
+                        <div class="node-desc">Entities, Q&A & Reports</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

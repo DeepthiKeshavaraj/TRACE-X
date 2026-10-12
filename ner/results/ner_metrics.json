@@ -1,0 +1,37 @@
+{
+    "success": true,
+    "model_type": "Conditional Random Fields (CRF) - Sequence Labeling",
+    "dataset_evaluated": "CoNLL-2003 English Test Set",
+    "sentences_evaluated": 3453,
+    "token_accuracy": 95.57,
+    "overall_precision": 79.5,
+    "overall_recall": 77.5,
+    "overall_f1": 78.48,
+    "category_metrics": {
+        "PERSON": {
+            "precision": 85.15,
+            "recall": 89.72,
+            "f1_score": 87.37,
+            "support": 2773
+        },
+        "ORGANIZATION": {
+            "precision": 74.91,
+            "recall": 74.4,
+            "f1_score": 74.65,
+            "support": 2496
+        },
+        "LOCATION": {
+            "precision": 83.05,
+            "recall": 79.17,
+            "f1_score": 81.06,
+            "support": 1925
+        },
+        "MISCELLANEOUS": {
+            "precision": 79.45,
+            "recall": 74.95,
+            "f1_score": 77.13,
+            "support": 918
+        }
+    },
+    "classification_report_str": "              precision    recall  f1-score   support\n\n         LOC     0.8321    0.8052    0.8184      1668\n        MISC     0.7994    0.7322    0.7643       702\n         ORG     0.7262    0.6948    0.7102      1661\n         PER     0.8229    0.8448    0.8337      1617\n\n   micro avg     0.7950    0.7750    0.7848      5648\n   macro avg     0.7952    0.7692    0.7816      5648\nweighted avg     0.7943    0.7750    0.7842      5648\n"
+}

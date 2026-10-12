@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}TRACE-X — Dashboard{% endblock %}
+{% block page_title %}System Intelligence Dashboard{% endblock %}
+
+{% block content %}
+<!-- Missing Dataset Warning (Hidden by default, shown if API reports missing) -->
+<div id="missing-dataset-alert" class="alert alert-danger d-none mb-4 shadow-sm align-items-center" role="alert">
+    <i class="fa-solid fa-triangle-exclamation fa-2x me-3"></i>
+    <div>
+        <strong>Dataset Missing Warning!</strong>
+        <p class="m-0">Classification dataset not found. Please place the required CSV files in <code>data/raw/classification/</code>.</p>
+    </div>
+</div>
+
+<!-- Hero Banner -->
+<div class="hero-card mb-4 p-4 rounded-3 position-relative overflow-hidden">
+    <div class="hero-overlay"></div>
+    <div class="position-relative z-1">
+        <div class="d-flex align-items-center mb-2">
+            <span class="badge bg-cyan text-dark font-weight-bold uppercase-track me-2">Intelligence Engine</span>
+            <span class="text-secondary">Text & Speech Evidence Processor</span>
+        </div>
+        <h2 class="display-6 fw-bold text-white mb-2">TRACE-X</h2>
+        <p class="lead text-cyan-light mb-0">"Transform unstructured multi-source evidence into structured intelligence."</p>
+    </div>
+</div>
+
+<!-- Dynamic Metric Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card">
+            <div class="stat-icon icon-blue">
+                <i class="fa-solid fa-file-text"></i>
+            </div>
+            <div class="stat-details">
+                <span class="stat-label">Dataset Records</span>
+                <h3 class="stat-value" id="kpi-total-records"><div class="spinner-border spinner-border-sm text-cyan"></div></h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card">
+            <div class="stat-icon icon-purple">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div class="stat-details">
+                <span class="stat-label">Categories</span>
+                <h3 class="stat-value" id="kpi-categories"><div class="spinner-border spinner-border-sm text-cyan"></div></h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card">
+            <div class="stat-icon icon-cyan">
+                <i class="fa-solid fa-table-cells"></i>
+            </div>
+            <div class="stat-details">
+                <span class="stat-label">Training Records</span>
+                <h3 class="stat-value" id="kpi-train-records"><div class="spinner-border spinner-border-sm text-cyan"></div></h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card">
+            <div class="stat-icon icon-amber">
+                <i class="fa-solid fa-vial-substitute"></i>
+            </div>
+            <div class="stat-details">
+                <span class="stat-label">Test Records</span>
+                <h3 class="stat-value" id="kpi-test-records"><div class="spinner-border spinner-border-sm text-cyan"></div></h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card">
+            <div class="stat-icon icon-green">
+                <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <div class="stat-details">
+                <span class="stat-label">Best Model Acc</span>
+                <h3 class="stat-value text-green" id="kpi-best-acc"><div class="spinner-border spinner-border-sm text-green"></div></h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card">
+            <div class="stat-icon icon-indigo">
+                <i class="fa-solid fa-award"></i>
+            </div>
+            <div class="stat-details">
+                <span class="stat-label">Best Model F1</span>
+                <h3 class="stat-value text-indigo" id="kpi-best-f1"><div class="spinner-border spinner-border-sm text-indigo"></div></h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Active Intelligence Modules Grid (Full Width) -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-12">
+        <div class="card bg-dark-card border-secondary-dark">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-compass text-cyan me-2"></i> Active Intelligence Modules
+                </h6>
+                <span class="badge bg-success px-3 py-1">6 Active Modules</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4 col-lg-2">
+                        <a href="{{ url_for('main.classification') }}" class="btn btn-outline-cyan text-start p-3 h-100 d-block">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-white"><i class="fa-solid fa-brain me-2 text-cyan"></i> Text Classification</strong>
+                                <span class="badge bg-success">Active</span>
+                            </div>
+                            <small class="d-block text-secondary">TF-IDF vectorization with Naive Bayes, Logistic Regression & Linear SVM.</small>
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 col-lg-2">
+                        <a href="{{ url_for('main.speech') }}" class="btn btn-outline-purple text-start p-3 h-100 d-block">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-white"><i class="fa-solid fa-microphone me-2 text-purple"></i> Speech Processing</strong>
+                                <span class="badge bg-cyan text-dark fw-bold">Active</span>
+                            </div>
+                            <small class="d-block text-secondary">Audio evidence upload, speech-to-text transcription, live recording & WER/CER metrics.</small>
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 col-lg-2">
+                        <a href="{{ url_for('main.multilingual') }}" class="btn btn-outline-indigo text-start p-3 h-100 d-block">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-white"><i class="fa-solid fa-language me-2 text-indigo"></i> Multilingual NLP</strong>
+                                <span class="badge bg-cyan text-dark fw-bold">Active</span>
+                            </div>
+                            <small class="d-block text-secondary">Automatic language detection (Tamil, Hindi, French, Spanish, German) & English translation.</small>
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 col-lg-2">
+                        <a href="{{ url_for('main.ner') }}" class="btn btn-outline-amber text-start p-3 h-100 d-block">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-white"><i class="fa-solid fa-tags me-2 text-amber"></i> Named Entity Recognition</strong>
+                                <span class="badge bg-cyan text-dark fw-bold">Active</span>
+                            </div>
+                            <small class="d-block text-secondary">Sequence labeling (CRF on CoNLL-2003) for PERSON, ORGANIZATION, LOCATION, and MISC entity extraction.</small>
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 col-lg-2">
+                        <a href="{{ url_for('main.qa') }}" class="btn btn-outline-success text-start p-3 h-100 d-block">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-white"><i class="fa-solid fa-circle-question me-2 text-success"></i> Question Answering</strong>
+                                <span class="badge bg-cyan text-dark fw-bold">Active</span>
+                            </div>
+                            <small class="d-block text-secondary">Extractive evidence answering, sentence relevance ranking, and exact answer span extraction.</small>
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 col-lg-2">
+                        <a href="{{ url_for('chatbot.chatbot_index') }}" class="btn btn-outline-cyan text-start p-3 h-100 d-block">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-white"><i class="fa-solid fa-robot me-2 text-cyan"></i> Conversational AI</strong>
+                                <span class="badge bg-cyan text-dark fw-bold">Active</span>
+                            </div>
+                            <small class="d-block text-secondary">Multi-turn dialogue, pronoun resolution, and evidence grounded intelligence assistant.</small>
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="mt-4 p-3 bg-darker rounded border border-dark">
+                    <small class="text-cyan font-weight-bold d-block mb-1"><i class="fa-solid fa-circle-info me-1"></i> System Architecture Note:</small>
+                    <small class="text-secondary">Speech Processing, Multilingual NLP, Named Entity Recognition, and Question Answering extract and structure evidence text representations before feeding into downstream relationship and correlation engines.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        loadDashboardSummary();
+    });
+</script>
+{% endblock %}

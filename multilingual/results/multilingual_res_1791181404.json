@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "விசாரணை அதிகாரிகள் சம்பவ இடத்திற்கு விரைந்து சென்று சோதனையில் ஈடுபட்டனர்.",
+  "detected_language": "Tamil",
+  "language_code": "ta",
+  "confidence": 100.0,
+  "normalized_text": "விசாரணை அதிகாரிகள் சம்பவ இடத்திற்கு விரைந்து சென்று சோதனையில் ஈடுபட்டனர்.",
+  "translated_text": "Investigating officers rushed to the scene and conducted an inspection.",
+  "token_count": 27,
+  "char_count": 73,
+  "processing_time_seconds": 0.202
+}

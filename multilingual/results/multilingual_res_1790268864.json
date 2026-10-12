@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "Der Sicherheitsbeamte berichtete, dass eine unbekannte Person durch den Haupteingang in das Gebäude gelangt war.",
+  "detected_language": "German",
+  "language_code": "de",
+  "confidence": 100.0,
+  "normalized_text": "der sicherheitsbeamte berichtete, dass eine unbekannte person durch den haupteingang in das gebäude gelangt war.",
+  "translated_text": "The security officer reported that an unknown person had entered the building through the main entrance.",
+  "token_count": 15,
+  "char_count": 112,
+  "processing_time_seconds": 1.495
+}

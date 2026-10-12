@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "Le témoin a déclaré avoir reçu un message suspect avant l'incident.",
+  "detected_language": "French",
+  "language_code": "fr",
+  "confidence": 100.0,
+  "normalized_text": "le témoin a déclaré avoir reçu un message suspect avant l'incident.",
+  "translated_text": "The witness stated that he had received a suspicious message prior to the incident.",
+  "token_count": 12,
+  "char_count": 67,
+  "processing_time_seconds": 1.707
+}

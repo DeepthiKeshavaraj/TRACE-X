@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}TRACE-X — Conversational AI / Chatbot{% endblock %}
+{% block page_title %}Conversational AI / Chatbot{% endblock %}
+
+{% block content %}
+<!-- Include standalone Chatbot CSS stylesheet -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+
+<!-- Module Banner -->
+<div class="card bg-dark-card border-secondary-dark mb-4">
+    <div class="card-body p-4 position-relative overflow-hidden">
+        <div class="d-flex align-items-center mb-2">
+            <span class="badge bg-cyan text-dark font-weight-bold uppercase-track me-2">NLP Module 06</span>
+            <span class="text-secondary">Multi-Turn Dialogue & Evidence Grounded Assistant</span>
+        </div>
+        <h3 class="fw-bold text-white mb-2">Conversational AI / Chatbot</h3>
+        <p class="text-secondary mb-0">Interact with TRACE-X using natural language dialogue. The chatbot retains conversation memory across turns, automatically resolves pronouns (e.g., <em>he, she, there</em>), and grounds all answers directly in active evidence context.</p>
+    </div>
+</div>
+
+<!-- Main Conversational Interface Section -->
+<div class="row g-4 mb-4">
+
+    <!-- Left Panel: Active Evidence Context -->
+    <div class="col-lg-4">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-file-shield text-cyan me-2"></i> Active Evidence Context
+                </h6>
+                <div class="d-flex gap-1">
+                    <button type="button" id="btn-load-sample-evidence" class="btn btn-sm btn-outline-cyan" title="Load Sample Evidence">
+                        <i class="fa-solid fa-file-import me-1"></i> Sample
+                    </button>
+                    <button type="button" id="btn-clear-evidence" class="btn btn-sm btn-outline-danger" title="Clear Evidence">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <div class="mb-2 d-flex justify-content-between align-items-center flex-wrap gap-1">
+                    <span class="text-secondary small">Status:</span>
+                    <span id="evidence-status-badge" class="badge bg-secondary">No Evidence Loaded</span>
+                </div>
+                <div class="d-flex gap-1 mb-2">
+                    <label for="upload-chatbot-file" class="btn btn-sm btn-outline-cyan w-50 py-1 px-1 text-center m-0">
+                        <i class="fa-solid fa-file-arrow-up me-1"></i> Upload File (.pdf, .docx)
+                    </label>
+                    <label for="upload-chatbot-image" class="btn btn-sm btn-outline-purple w-50 py-1 px-1 text-center m-0">
+                        <i class="fa-solid fa-file-image me-1"></i> Upload Image (OCR)
+                    </label>
+                    <input type="file" id="upload-chatbot-file" class="d-none" multiple accept=".txt,.pdf,.docx,.doc">
+                    <input type="file" id="upload-chatbot-image" class="d-none" multiple accept=".png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff">
+                </div>
+                <div id="chatbot-upload-status"></div>
+                <div class="flex-grow-1 mb-3">
+                    <textarea id="chatbot-evidence-input" class="form-control chatbot-evidence-box h-100 p-3" placeholder="Paste intelligence report, transcript, or upload evidence files/images..."></textarea>
+                </div>
+                <button type="button" id="btn-apply-evidence" class="btn btn-cyan w-100">
+                    <i class="fa-solid fa-check-double me-1"></i> Update Active Evidence Context
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel: Interactive Chat Room -->
+    <div class="col-lg-8">
+        <div class="card bg-dark-card border-secondary-dark h-100 d-flex flex-column">
+            <!-- Chat Header -->
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bot-avatar-circle bg-cyan text-dark">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h6 class="m-0 text-white font-weight-bold">TRACE-X Evidence Assistant</h6>
+                        <small class="text-success"><i class="fa-solid fa-circle me-1 small"></i> Online & Ready</small>
+                    </div>
+                </div>
+                <div>
+                    <button type="button" id="btn-reset-chat" class="btn btn-sm btn-outline-secondary" title="Reset Session">
+                        <i class="fa-solid fa-rotate-left me-1"></i> New Session
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Timeline -->
+            <div id="chatbot-messages" class="card-body chatbot-messages-body flex-grow-1 p-4 overflow-y-auto">
+                <!-- Welcome Bot Message -->
+                <div class="chat-bubble-row bot-row mb-3">
+                    <div class="bot-avatar me-2">
+                        <i class="fa-solid fa-robot text-cyan"></i>
+                    </div>
+                    <div class="chat-bubble bot-bubble p-3 rounded">
+                        <div class="bubble-header d-flex justify-content-between align-items-center mb-1">
+                            <span class="badge bg-dark-card text-cyan font-monospace">TRACE-X AI</span>
+                            <small class="text-secondary opacity-75">Just now</small>
+                        </div>
+                        <div class="bubble-text text-light">
+                            Hello! I am <strong>TRACE-X Conversational AI</strong>.<br><br>
+                            Paste evidence text in the left panel and ask me natural language questions like <em>"Who visited Sydney?"</em> or follow-ups like <em>"Where did he go next?"</em>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggested Quick Prompts -->
+            <div class="px-4 py-2 border-top border-secondary-dark bg-dark-header">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="text-secondary small me-1"><i class="fa-solid fa-lightbulb text-warning me-1"></i> Quick Prompts:</span>
+                    <button type="button" class="btn btn-sm btn-dark border-secondary-dark chatbot-prompt-btn" data-prompt="Who is mentioned in the evidence?">Who is mentioned?</button>
+                    <button type="button" class="btn btn-sm btn-dark border-secondary-dark chatbot-prompt-btn" data-prompt="Where did events take place?">Where did events occur?</button>
+                    <button type="button" class="btn btn-sm btn-dark border-secondary-dark chatbot-prompt-btn" data-prompt="When did the incident happen?">When did it happen?</button>
+                    <button type="button" class="btn btn-sm btn-dark border-secondary-dark chatbot-prompt-btn" data-prompt="Help me with commands">Help & Instructions</button>
+                </div>
+            </div>
+
+            <!-- Chat Input Controls -->
+            <div class="card-footer bg-dark-header border-secondary-dark p-3">
+                <form id="chatbot-input-form" class="d-flex gap-2 align-items-center">
+                    <input type="text" id="chatbot-user-input" class="form-control chatbot-input-field p-3" placeholder="Type your evidence query or message here..." autocomplete="off" required>
+                    <button type="submit" id="btn-send-message" class="btn btn-cyan px-4 py-3">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Include standalone Chatbot JS script -->
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+{% endblock %}

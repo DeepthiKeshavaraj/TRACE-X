@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "Die Ermittler haben die Beweise am Tatort sorgfältig analysiert und dokumentiert.",
+  "detected_language": "German",
+  "language_code": "de",
+  "confidence": 100.0,
+  "normalized_text": "die ermittler haben die beweise am tatort sorgfältig analysiert und dokumentiert.",
+  "translated_text": "Investigators carefully analyzed and documented the evidence at the crime scene.",
+  "token_count": 11,
+  "char_count": 81,
+  "processing_time_seconds": 0.02
+}

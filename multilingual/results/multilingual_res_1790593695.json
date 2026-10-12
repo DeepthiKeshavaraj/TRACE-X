@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "पुलिस ने मामले की जांच शुरू कर दी है और मुख्य गवाह से पूछताछ की जा रही है।",
+  "detected_language": "Hindi",
+  "language_code": "hi",
+  "confidence": 100.0,
+  "normalized_text": "पुलिस ने मामले की जांच शुरू कर दी है और मुख्य गवाह से पूछताछ की जा रही है।",
+  "translated_text": "Police have initiated an investigation into the case and are questioning the main witness.",
+  "token_count": 28,
+  "char_count": 74,
+  "processing_time_seconds": 0.009
+}

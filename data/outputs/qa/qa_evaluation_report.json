@@ -1,0 +1,76 @@
+{
+    "success": true,
+    "evaluation_type": "Sample Test Evaluation (Extractive QA Engine)",
+    "total_tests": 6,
+    "valid_qa_tests": 3,
+    "exact_match_score": 100.0,
+    "mean_token_f1_score": 100.0,
+    "test_results": [
+        {
+            "id": "test_01",
+            "category": "Location Question",
+            "question": "Where did John Smith visit?",
+            "expected_answer": "Chennai",
+            "predicted_answer": "Chennai",
+            "exact_match": true,
+            "token_f1": 1.0,
+            "confidence": 67.39,
+            "status": "Completed"
+        },
+        {
+            "id": "test_02",
+            "category": "Date Question",
+            "question": "When did John Smith visit Chennai?",
+            "expected_answer": "12 March 2026",
+            "predicted_answer": "12 March 2026",
+            "exact_match": true,
+            "token_f1": 1.0,
+            "confidence": 68.33,
+            "status": "Completed"
+        },
+        {
+            "id": "test_03",
+            "category": "Organization Question",
+            "question": "Which organization employed John Smith?",
+            "expected_answer": "Microsoft",
+            "predicted_answer": "Microsoft",
+            "exact_match": true,
+            "token_f1": 1.0,
+            "confidence": 52.0,
+            "status": "Completed"
+        },
+        {
+            "id": "test_04",
+            "category": "Absent Answer Test",
+            "question": "What is the capital of France?",
+            "expected_answer": "The answer could not be found in the supplied evidence.",
+            "predicted_answer": "The answer could not be found in the supplied evidence.",
+            "exact_match": true,
+            "token_f1": 0.9,
+            "confidence": 0.0,
+            "status": "Answer Not Found"
+        },
+        {
+            "id": "test_05",
+            "category": "Empty Evidence Test",
+            "question": "Where did John Smith visit?",
+            "expected_answer": "Error",
+            "predicted_answer": "Context evidence text cannot be empty.",
+            "exact_match": false,
+            "token_f1": 0.0,
+            "confidence": null,
+            "status": "Error"
+        },
+        {
+            "id": "test_06",
+            "category": "Empty Question Test",
+            "question": "",
+            "expected_answer": "Error",
+            "predicted_answer": "Question cannot be empty.",
+            "exact_match": false,
+            "token_f1": 0.0,
+            "confidence": null,
+            "status": "Error"
+        }
+    ]
+}

@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "original_evidence": "Les enquêteurs ont analysé les preuves.",
+  "detected_language": "French",
+  "language_code": "fr",
+  "confidence": 100.0,
+  "normalized_text": "les enquêteurs ont analysé les preuves.",
+  "token_count": 6,
+  "char_count": 39,
+  "processing_time_seconds": 0.002
+}

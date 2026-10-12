@@ -1,0 +1,436 @@
+{% extends 'base.html' %}
+
+{% block title %}TRACE-X — Named Entity Recognition{% endblock %}
+{% block page_title %}Named Entity Recognition (NER){% endblock %}
+
+{% block content %}
+<!-- Module Banner -->
+<div class="card bg-dark-card border-secondary-dark mb-4">
+    <div class="card-body p-4 position-relative overflow-hidden">
+        <div class="d-flex align-items-center mb-2">
+            <span class="badge bg-amber text-dark font-weight-bold uppercase-track me-2">NLP Module 04</span>
+            <span class="text-secondary">Information Extraction & Evidence Structuring</span>
+        </div>
+        <h3 class="fw-bold text-white mb-2">Named Entity Recognition (NER)</h3>
+        <p class="text-secondary mb-0">Extract critical entities — <strong>PERSON</strong>, <strong>ORGANIZATION</strong>, <strong>LOCATION</strong>, and <strong>MISCELLANEOUS</strong> — from investigation reports using sequence labeling trained on the <strong>CoNLL-2003 English NER dataset</strong>.</p>
+    </div>
+</div>
+
+<!-- Main Interactive Analysis Section -->
+<div class="row g-4 mb-4">
+    <!-- Input Form & Examples -->
+    <div class="col-lg-6">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-file-contract text-amber me-2"></i> Evidence Text Input
+                </h6>
+                <span class="badge bg-darker text-amber border border-amber">CoNLL BIO Engine</span>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <!-- Investigation Example Shortcuts -->
+                <div class="mb-3">
+                    <label class="form-label text-secondary small text-uppercase font-weight-bold">Quick Investigation Examples:</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary ner-sample-btn" data-text="The investigation team interviewed John Smith at Chennai.">
+                            <i class="fa-solid fa-user-shield me-1"></i> Sample 1 (Person & Location)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary ner-sample-btn" data-text="The police contacted representatives from Microsoft.">
+                            <i class="fa-solid fa-building me-1"></i> Sample 2 (Organization)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary ner-sample-btn" data-text="The incident occurred near Chennai Central Railway Station.">
+                            <i class="fa-solid fa-location-dot me-1"></i> Sample 3 (Location)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary ner-sample-btn" data-text="The witness met officer Robert Brown on Monday.">
+                            <i class="fa-solid fa-user-check me-1"></i> Sample 4 (Person & Date)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Text Area Input Header & Upload Controls -->
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                    <label for="ner-input-text" class="form-label text-secondary font-weight-bold m-0">Enter Text for Entity Extraction:</label>
+                    <div class="d-flex gap-2">
+                        <label for="upload-ner-file" class="btn btn-sm btn-outline-cyan m-0 py-1 px-2">
+                            <i class="fa-solid fa-file-arrow-up me-1"></i> Upload File (.txt, .pdf, .docx)
+                        </label>
+                        <label for="upload-ner-image" class="btn btn-sm btn-outline-purple m-0 py-1 px-2">
+                            <i class="fa-solid fa-file-image me-1"></i> Upload Image (OCR)
+                        </label>
+                        <input type="file" id="upload-ner-file" class="d-none" multiple accept=".txt,.pdf,.docx,.doc">
+                        <input type="file" id="upload-ner-image" class="d-none" multiple accept=".png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff">
+                    </div>
+                </div>
+                <div id="ner-upload-status"></div>
+                <div class="mb-3 flex-grow-1">
+                    <textarea id="ner-input-text" class="form-control bg-darker border-secondary-dark text-white p-3 font-monospace" rows="5" placeholder="Type or paste investigation text here or upload files/images... e.g., 'Agent Sarah Connor reported unusual network traffic from Cyberdyne Systems in San Francisco.'"></textarea>
+                </div>
+
+                <button id="btn-analyze-ner" class="btn btn-cyan w-100 py-2 font-weight-bold">
+                    <i class="fa-solid fa-tags me-2"></i> Analyze Entities
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output & Highlighted Visual Entity Section -->
+    <div class="col-lg-6">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-eye text-cyan me-2"></i> Visual Entity Highlighting & Breakdown
+                </h6>
+                <span id="ner-status-badge" class="badge bg-secondary">Awaiting Input</span>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <!-- Entity Category Counts Header -->
+                <div class="d-flex flex-wrap gap-2 mb-3 p-2 bg-darker rounded border border-dark align-items-center">
+                    <span class="small text-secondary font-weight-bold me-2">Entity Summary:</span>
+                    <span class="badge bg-person-badge px-3 py-2">PERSON: <strong id="cnt-person">0</strong></span>
+                    <span class="badge bg-org-badge px-3 py-2">ORGANIZATION: <strong id="cnt-org">0</strong></span>
+                    <span class="badge bg-loc-badge px-3 py-2">LOCATION: <strong id="cnt-loc">0</strong></span>
+                    <span class="badge bg-misc-badge px-3 py-2">MISC: <strong id="cnt-misc">0</strong></span>
+                </div>
+
+                <!-- Visual Highlighting Container -->
+                <div class="mb-3 flex-grow-1">
+                    <label class="form-label text-secondary small text-uppercase font-weight-bold">Annotated Evidence Text:</label>
+                    <div id="ner-highlighted-box" class="p-3 bg-darker rounded border border-secondary-dark min-h-120 text-white leading-relaxed">
+                        <em class="text-secondary">Extracted entity annotations will be highlighted here in real-time...</em>
+                    </div>
+                </div>
+
+                <!-- Detected Entity List Table -->
+                <div class="table-responsive max-h-180 overflow-y-auto">
+                    <table class="table table-dark table-hover table-sm border-secondary-dark m-0 align-middle">
+                        <thead class="table-dark-header">
+                            <tr>
+                                <th>Entity Text</th>
+                                <th>Entity Category</th>
+                                <th>BIO Tag</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ner-entity-tbody">
+                            <tr>
+                                <td colspan="3" class="text-center text-secondary py-3">No entities extracted yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Token Level BIO Predictions & BIO Legend -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card bg-dark-card border-secondary-dark">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-list-ol text-purple me-2"></i> Token-Level Prediction Sequence (BIO Scheme)
+                </h6>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#token-seq-collapse">
+                    Toggle Token View
+                </button>
+            </div>
+            <div class="collapse show" id="token-seq-collapse">
+                <div class="card-body">
+                    <p class="small text-secondary mb-2">Each token is parsed, POS-tagged, and labeled with CoNLL BIO tags by the Conditional Random Field (CRF) sequence model.</p>
+                    <div class="table-responsive max-h-220 overflow-y-auto">
+                        <table class="table table-dark table-striped table-sm border-secondary-dark align-middle m-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Token</th>
+                                    <th>POS Tag</th>
+                                    <th>Predicted BIO Label</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ner-tokens-tbody">
+                                <tr>
+                                    <td colspan="4" class="text-center text-secondary py-2">Run an entity analysis to inspect token-level sequence predictions.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BIO Tagging Legend & Academic Explanation -->
+    <div class="col-lg-4">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-graduation-cap text-cyan me-2"></i> CoNLL BIO Scheme Guide
+                </h6>
+            </div>
+            <div class="card-body small text-secondary">
+                <div class="mb-3">
+                    <strong class="text-cyan d-block mb-1">Tag Prefix Meaning:</strong>
+                    <ul class="ps-3 mb-0">
+                        <li><span class="badge bg-cyan text-dark font-weight-bold">B-</span> Beginning of a named entity</li>
+                        <li><span class="badge bg-purple text-white">I-</span> Inside / continuation of an entity</li>
+                        <li><span class="badge bg-secondary">O</span> Outside any named entity</li>
+                    </ul>
+                </div>
+                <div class="p-2 bg-darker rounded border border-dark">
+                    <strong class="text-white d-block mb-1">Entity Grouping Example:</strong>
+                    <div class="font-monospace text-cyan-light">
+                        John <span class="badge bg-cyan text-dark">B-PER</span><br>
+                        Smith <span class="badge bg-purple">I-PER</span><br>
+                        → <strong>John Smith</strong> (PERSON)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CoNLL-2003 Dataset Statistics & Model Evaluation Section -->
+<div class="card bg-dark-card border-secondary-dark mb-4">
+    <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+        <h6 class="m-0 text-white font-weight-bold">
+            <i class="fa-solid fa-chart-column text-green me-2"></i> CoNLL-2003 Dataset Statistics & CRF Model Evaluation
+        </h6>
+        <span class="badge bg-success">Empirical Results</span>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="p-3 bg-darker rounded border border-dark text-center">
+                    <span class="text-secondary small d-block">Training Sentences</span>
+                    <h4 class="text-cyan fw-bold m-0" id="stat-train-sents"><div class="spinner-border spinner-border-sm text-cyan"></div></h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-darker rounded border border-dark text-center">
+                    <span class="text-secondary small d-block">Validation Sentences</span>
+                    <h4 class="text-purple fw-bold m-0" id="stat-valid-sents"><div class="spinner-border spinner-border-sm text-purple"></div></h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-darker rounded border border-dark text-center">
+                    <span class="text-secondary small d-block">Test Sentences</span>
+                    <h4 class="text-amber fw-bold m-0" id="stat-test-sents"><div class="spinner-border spinner-border-sm text-amber"></div></h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-darker rounded border border-dark text-center">
+                    <span class="text-secondary small d-block">Total Dataset Tokens</span>
+                    <h4 class="text-green fw-bold m-0" id="stat-total-tokens"><div class="spinner-border spinner-border-sm text-green"></div></h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Evaluation Performance Table -->
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <h6 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-bullseye me-2 text-cyan"></i> Overall Model Performance (Test Set)</h6>
+                <table class="table table-dark table-bordered border-secondary-dark align-middle">
+                    <tbody>
+                        <tr>
+                            <td class="text-secondary">Model Architecture</td>
+                            <td class="fw-bold text-cyan" id="eval-model-name">Linear-Chain CRF (lbfgs)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Overall F1-Score (seqeval)</td>
+                            <td class="fw-bold text-green h5 m-0" id="eval-overall-f1"><div class="spinner-border spinner-border-sm text-green"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Overall Precision</td>
+                            <td class="fw-bold text-white" id="eval-overall-p"><div class="spinner-border spinner-border-sm text-white"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Overall Recall</td>
+                            <td class="fw-bold text-white" id="eval-overall-r"><div class="spinner-border spinner-border-sm text-white"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Token Sequence Accuracy</td>
+                            <td class="fw-bold text-cyan" id="eval-token-acc"><div class="spinner-border spinner-border-sm text-cyan"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-lg-6">
+                <h6 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-layer-group me-2 text-purple"></i> Per-Category Performance (Entity Level)</h6>
+                <table class="table table-dark table-striped table-sm border-secondary-dark align-middle">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1-Score</th>
+                            <th>Support</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eval-category-tbody">
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary py-3">Loading evaluation metrics...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadNERStats();
+
+    // Sample text button click handlers
+    document.querySelectorAll('.ner-sample-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const sampleText = this.getAttribute('data-text');
+            document.getElementById('ner-input-text').value = sampleText;
+            analyzeNER(sampleText);
+        });
+    });
+
+    // Analyze button click handler
+    document.getElementById('btn-analyze-ner').addEventListener('click', function() {
+        const textInput = document.getElementById('ner-input-text');
+        const text = textInput ? textInput.value.trim() : '';
+        if (!text) {
+            alert('Please enter text for entity analysis.');
+            return;
+        }
+        analyzeNER(text);
+    });
+});
+
+function analyzeNER(text) {
+    const statusBadge = document.getElementById('ner-status-badge');
+    const highlightedBox = document.getElementById('ner-highlighted-box');
+    const entityTbody = document.getElementById('ner-entity-tbody');
+    const tokensTbody = document.getElementById('ner-tokens-tbody');
+
+    statusBadge.className = 'badge bg-warning text-dark';
+    statusBadge.textContent = 'Processing...';
+
+    fetch('/api/ner/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+            statusBadge.className = 'badge bg-danger';
+            statusBadge.textContent = 'Error';
+            highlightedBox.innerHTML = `<span class="text-danger">${data.message || 'Analysis failed.'}</span>`;
+            return;
+        }
+
+        statusBadge.className = 'badge bg-success';
+        statusBadge.textContent = `${data.total_entities} Entities Found`;
+
+        // Update counts
+        document.getElementById('cnt-person').textContent = data.entity_counts.PERSON || 0;
+        document.getElementById('cnt-org').textContent = data.entity_counts.ORGANIZATION || 0;
+        document.getElementById('cnt-loc').textContent = data.entity_counts.LOCATION || 0;
+        document.getElementById('cnt-misc').textContent = data.entity_counts.MISCELLANEOUS || 0;
+
+        // Render highlighted HTML
+        highlightedBox.innerHTML = data.highlighted_html;
+
+        // Render Entity Table
+        if (data.entities && data.entities.length > 0) {
+            entityTbody.innerHTML = data.entities.map(e => `
+                <tr>
+                    <td class="fw-bold text-white">${escapeHtml(e.text)}</td>
+                    <td><span class="badge ${getBadgeClass(e.type)}">${e.type}</span></td>
+                    <td class="font-monospace text-cyan">${e.bio_tag || 'ENT'}</td>
+                </tr>
+            `).join('');
+        } else {
+            entityTbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-3">No named entities detected in this text.</td></tr>';
+        }
+
+        // Render Token BIO Predictions
+        if (data.tokens && data.tokens.length > 0) {
+            tokensTbody.innerHTML = data.tokens.map((t, idx) => `
+                <tr>
+                    <td class="text-secondary small">${idx + 1}</td>
+                    <td class="fw-bold text-white font-monospace">${escapeHtml(t.token)}</td>
+                    <td class="text-secondary small">${t.pos}</td>
+                    <td>
+                        <span class="badge ${getBioBadgeClass(t.bio_tag)} font-monospace">
+                            ${t.bio_tag}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    })
+    .catch(err => {
+        console.error('NER Error:', err);
+        statusBadge.className = 'badge bg-danger';
+        statusBadge.textContent = 'Network Error';
+    });
+}
+
+function loadNERStats() {
+    fetch('/api/ner/stats')
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) return;
+
+        const ds = data.dataset_stats || {};
+        const ev = data.eval_metrics || {};
+
+        document.getElementById('stat-train-sents').textContent = (ds.train_sentences || 0).toLocaleString();
+        document.getElementById('stat-valid-sents').textContent = (ds.valid_sentences || 0).toLocaleString();
+        document.getElementById('stat-test-sents').textContent = (ds.test_sentences || 0).toLocaleString();
+        document.getElementById('stat-total-tokens').textContent = (ds.total_tokens || 0).toLocaleString();
+
+        document.getElementById('eval-overall-f1').textContent = `${ev.overall_f1 || '0'}%`;
+        document.getElementById('eval-overall-p').textContent = `${ev.overall_precision || '0'}%`;
+        document.getElementById('eval-overall-r').textContent = `${ev.overall_recall || '0'}%`;
+        document.getElementById('eval-token-acc').textContent = `${ev.token_accuracy || '0'}%`;
+
+        const cats = ev.category_metrics || {};
+        const catRows = Object.keys(cats).map(catName => {
+            const m = cats[catName];
+            return `
+                <tr>
+                    <td class="fw-bold text-white"><span class="badge ${getBadgeClass(catName)} me-2">${catName}</span></td>
+                    <td class="text-white">${m.precision}%</td>
+                    <td class="text-white">${m.recall}%</td>
+                    <td class="fw-bold text-green">${m.f1_score}%</td>
+                    <td class="text-secondary">${m.support}</td>
+                </tr>
+            `;
+        }).join('');
+
+        document.getElementById('eval-category-tbody').innerHTML = catRows || '<tr><td colspan="5">No category metrics available.</td></tr>';
+    });
+}
+
+function getBadgeClass(type) {
+    if (type === 'PERSON') return 'bg-person-badge';
+    if (type === 'ORGANIZATION') return 'bg-org-badge';
+    if (type === 'LOCATION') return 'bg-loc-badge';
+    if (type === 'MISCELLANEOUS') return 'bg-misc-badge';
+    return 'bg-secondary';
+}
+
+function getBioBadgeClass(tag) {
+    if (!tag) return 'bg-darker text-secondary border border-secondary';
+    if (tag.startsWith ? tag.startsWith('B-') : tag.indexOf('B-') === 0) return 'bg-cyan text-dark';
+    if (tag.startsWith ? tag.startsWith('I-') : tag.indexOf('I-') === 0) return 'bg-purple text-white';
+    return 'bg-darker text-secondary border border-secondary';
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+</script>
+{% endblock %}

@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block title %}TRACE-X — Multilingual NLP{% endblock %}
+{% block page_title %}Multilingual NLP & Language Detection{% endblock %}
+
+{% block content %}
+<!-- Visual Multilingual Execution Pipeline -->
+<div class="card bg-dark-card border-secondary-dark mb-4">
+    <div class="card-header bg-dark-header border-secondary-dark">
+        <h6 class="m-0 text-white font-weight-bold">
+            <i class="fa-solid fa-diagram-project text-cyan me-2"></i> Multilingual Evidence Execution Pipeline
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="pipeline-container justify-content-between">
+            <div class="pipeline-node node-input">
+                <div class="node-icon"><i class="fa-solid fa-language"></i></div>
+                <div class="node-title">Multilingual Evidence</div>
+                <div class="node-desc">Tamil, Hindi, French...</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node">
+                <div class="node-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <div class="node-title">Language Detection</div>
+                <div class="node-desc">ISO Code Identification</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node node-active">
+                <div class="node-icon"><i class="fa-solid fa-id-card"></i></div>
+                <div class="node-title">Language Identification</div>
+                <div class="node-desc">Language Family Mapping</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node">
+                <div class="node-icon"><i class="fa-solid fa-filter"></i></div>
+                <div class="node-title">Text Normalization</div>
+                <div class="node-desc">Unicode & Token Counts</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node">
+                <div class="node-icon"><i class="fa-solid fa-gavel"></i></div>
+                <div class="node-title">Translation</div>
+                <div class="node-desc">English Representation</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node node-output">
+                <div class="node-icon"><i class="fa-solid fa-bullseye"></i></div>
+                <div class="node-title">Common Representation</div>
+                <div class="node-desc">Ready for Future Modules</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 1: Multilingual Input & Sample Buttons -->
+<div class="card bg-dark-card border-secondary-dark mb-4">
+    <div class="card-header bg-dark-header border-secondary-dark">
+        <h6 class="m-0 text-white font-weight-bold">
+            <i class="fa-solid fa-globe text-purple me-2"></i> Multilingual Text Evidence Input
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+                <!-- Evidence Input Options Header & Upload Bar -->
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                    <label for="input-multilingual-text" class="form-label text-light fw-bold m-0">Enter Multilingual Text Evidence:</label>
+                    <div class="d-flex gap-2">
+                        <label for="upload-multilingual-file" class="btn btn-sm btn-outline-cyan m-0 py-1 px-2">
+                            <i class="fa-solid fa-file-arrow-up me-1"></i> Upload File (.txt, .pdf, .docx)
+                        </label>
+                        <label for="upload-multilingual-image" class="btn btn-sm btn-outline-purple m-0 py-1 px-2">
+                            <i class="fa-solid fa-file-image me-1"></i> Upload Image (OCR)
+                        </label>
+                        <input type="file" id="upload-multilingual-file" class="d-none" multiple accept=".txt,.pdf,.docx,.doc">
+                        <input type="file" id="upload-multilingual-image" class="d-none" multiple accept=".png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff">
+                    </div>
+                </div>
+                <div id="multilingual-upload-status"></div>
+                <div class="mb-3">
+                    <textarea id="input-multilingual-text" class="form-control bg-darker text-white border-secondary-dark" rows="5" placeholder="Paste evidence text or upload files/images (e.g. Tamil, Hindi, French, Spanish, German, English)..."></textarea>
+                </div>
+
+                <!-- Sample Buttons -->
+                <div class="mb-3 p-2 bg-darker rounded border border-dark">
+                    <small class="text-secondary d-block mb-2 font-weight-bold"><i class="fa-solid fa-lightbulb text-amber me-1"></i> Sample Multilingual Inputs (Click to load):</small>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-sm btn-outline-cyan sample-multi-btn" data-lang="en">🇬🇧 English</button>
+                        <button class="btn btn-sm btn-outline-purple sample-multi-btn" data-lang="ta">🇮🇳 Tamil (தமிழ்)</button>
+                        <button class="btn btn-sm btn-outline-indigo sample-multi-btn" data-lang="hi">🇮🇳 Hindi (हिंदी)</button>
+                        <button class="btn btn-sm btn-outline-success sample-multi-btn" data-lang="fr">🇫🇷 French (Français)</button>
+                        <button class="btn btn-sm btn-outline-warning sample-multi-btn" data-lang="es">🇪🇸 Spanish (Español)</button>
+                        <button class="btn btn-sm btn-outline-info sample-multi-btn" data-lang="de">🇩🇪 German (Deutsch)</button>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <button id="btn-clear-multilingual" class="btn btn-outline-secondary btn-sm">
+                        <i class="fa-solid fa-rotate-left me-1"></i> Clear Input
+                    </button>
+                    <div class="d-flex gap-2">
+                        <button id="btn-process-multilingual" class="btn btn-cyan">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i> Detect Language
+                        </button>
+                        <button id="btn-translate-multilingual" class="btn btn-purple">
+                            <i class="fa-solid fa-language me-1"></i> Translate to English
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detection & Analysis Results -->
+            <div class="col-lg-5">
+                <div class="p-3 bg-darker rounded border border-secondary-dark h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h6 class="text-cyan mb-3"><i class="fa-solid fa-square-poll-vertical me-2"></i> Detection Analysis Output</h6>
+                        
+                        <div id="multi-placeholder" class="text-center text-secondary py-5">
+                            <i class="fa-solid fa-globe fa-3x mb-3 opacity-50"></i>
+                            <p class="m-0">Enter text on the left or select a language sample to perform automatic language detection.</p>
+                        </div>
+
+                        <div id="multi-results-container" class="d-none">
+                            <div class="mb-3 p-3 rounded border border-cyan bg-dark-card text-center">
+                                <span class="text-secondary d-block small uppercase-track font-weight-bold">Detected Language</span>
+                                <h3 class="m-0 fw-bold text-cyan" id="output-detected-lang">Tamil</h3>
+                                <span class="badge bg-purple mt-1" id="output-lang-code">ISO Code: ta</span>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <div class="p-2 bg-dark-card rounded border border-dark text-center">
+                                        <small class="text-secondary d-block">Token Count (Words)</small>
+                                        <strong class="text-white h5 m-0 font-monospace" id="output-token-count">0</strong>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 bg-dark-card rounded border border-dark text-center">
+                                        <small class="text-secondary d-block">Character Count</small>
+                                        <strong class="text-indigo h5 m-0 font-monospace" id="output-char-count">0</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-2 bg-dark-card rounded border border-dark mb-3">
+                                <small class="text-secondary d-block fw-bold">Normalized Text:</small>
+                                <small class="text-light font-monospace" id="output-normalized-text">--</small>
+                            </div>
+
+                            <!-- Translation Result Box -->
+                            <div id="translation-output-box" class="p-3 bg-dark-card rounded border border-indigo d-none">
+                                <small class="text-indigo d-block fw-bold mb-1"><i class="fa-solid fa-gavel me-1"></i> English Translation:</small>
+                                <p class="text-white font-monospace m-0" id="output-translated-text">--</p>
+                                <small id="translation-status-msg" class="text-secondary d-block mt-1 small"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 2: Original vs Processed Evidence Summary -->
+<div class="card bg-dark-card border-secondary-dark mb-4">
+    <div class="card-header bg-dark-header border-secondary-dark">
+        <h6 class="m-0 text-white font-weight-bold">
+            <i class="fa-solid fa-boxes-stacked text-cyan me-2"></i> Evidence Preservation Record
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="p-3 bg-darker rounded border border-dark h-100">
+                    <span class="badge bg-secondary mb-2">Original Evidence (Preserved)</span>
+                    <p class="text-white font-monospace m-0" id="record-original-evidence">No evidence processed yet.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-darker rounded border border-dark h-100">
+                    <span class="badge bg-cyan text-dark fw-bold mb-2">Common English Representation</span>
+                    <p class="text-cyan-light font-monospace m-0" id="record-processed-evidence">Awaiting detection / translation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 3: Academic Viva Explanation Box -->
+<div class="card bg-dark-card border-secondary-dark">
+    <div class="card-header bg-dark-header border-secondary-dark">
+        <h6 class="m-0 text-white font-weight-bold">
+            <i class="fa-solid fa-book-open text-purple me-2"></i> Academic Overview: Multilingual NLP Domain
+        </h6>
+    </div>
+    <div class="card-body">
+        <p class="text-light m-0">
+            <strong>Multilingual NLP</strong> enables intelligence systems to ingest, detect, normalize, and process evidence across diverse global languages. By performing automatic language identification and converting foreign textual evidence into a unified common English representation, TRACE-X bridges language barriers and prepares multi-source multilingual evidence for unified downstream classification and correlation analysis.
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initMultilingualPage();
+    });
+</script>
+{% endblock %}

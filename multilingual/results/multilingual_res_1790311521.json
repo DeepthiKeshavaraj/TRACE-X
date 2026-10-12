@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "Hello, Gracias.",
+  "detected_language": "Spanish",
+  "language_code": "es",
+  "confidence": 100.0,
+  "normalized_text": "hello, gracias.",
+  "translated_text": "Hello, Thank you.",
+  "token_count": 2,
+  "char_count": 15,
+  "processing_time_seconds": 1.732
+}

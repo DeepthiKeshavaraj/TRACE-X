@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "Las autoridades policiales iniciaron una investigación detallada sobre los informes del caso.",
+  "detected_language": "Spanish",
+  "language_code": "es",
+  "confidence": 100.0,
+  "normalized_text": "las autoridades policiales iniciaron una investigación detallada sobre los informes del caso.",
+  "translated_text": "Police authorities launched a detailed investigation into the case reports.",
+  "token_count": 12,
+  "char_count": 93,
+  "processing_time_seconds": 0.023
+}

@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+
+{% block title %}TRACE-X — Speech Processing{% endblock %}
+{% block page_title %}Speech Processing & Audio Transcription{% endblock %}
+
+{% block content %}
+<!-- Visual Speech Pipeline Architecture -->
+<div class="card bg-dark-card border-secondary-dark mb-4">
+    <div class="card-header bg-dark-header border-secondary-dark">
+        <h6 class="m-0 text-white font-weight-bold">
+            <i class="fa-solid fa-diagram-project text-cyan me-2"></i> Speech Evidence Processing Pipeline
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="pipeline-container justify-content-between">
+            <div class="pipeline-node node-input">
+                <div class="node-icon"><i class="fa-solid fa-microphone"></i></div>
+                <div class="node-title">Speech Evidence</div>
+                <div class="node-desc">Upload or Live Record</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node">
+                <div class="node-icon"><i class="fa-solid fa-wave-square"></i></div>
+                <div class="node-title">Audio Capture</div>
+                <div class="node-desc">WAV / Live Stream</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node">
+                <div class="node-icon"><i class="fa-solid fa-microchip"></i></div>
+                <div class="node-title">Speech Recognition</div>
+                <div class="node-desc">Acoustic Signal Parsing</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node node-active">
+                <div class="node-icon"><i class="fa-solid fa-closed-captioning"></i></div>
+                <div class="node-title">Speech-to-Text</div>
+                <div class="node-desc">Transcript Generation</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node">
+                <div class="node-icon"><i class="fa-solid fa-filter"></i></div>
+                <div class="node-title">Text Preprocessing</div>
+                <div class="node-desc">Normalization & Counts</div>
+            </div>
+
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+            <div class="pipeline-node node-output">
+                <div class="node-icon"><i class="fa-solid fa-file-lines"></i></div>
+                <div class="node-title">NLP-ready Evidence</div>
+                <div class="node-desc">Ready for Analysis</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 1: Audio Input Options (Choose File vs Record Now) -->
+<div class="row g-4 mb-4">
+    <!-- Input Options Card -->
+    <div class="col-lg-7">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-sliders text-cyan me-2"></i> Audio Evidence Input Method
+                </h6>
+                <!-- Option Toggle Nav Tabs -->
+                <ul class="nav nav-pills card-header-pills" id="speech-mode-tabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active btn-sm font-weight-bold" id="tab-upload-link" data-bs-toggle="tab" data-bs-target="#tab-upload" type="button" role="tab">
+                            <i class="fa-solid fa-folder-open me-1"></i> Choose Audio File
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn-sm font-weight-bold" id="tab-record-link" data-bs-toggle="tab" data-bs-target="#tab-record" type="button" role="tab">
+                            <i class="fa-solid fa-circle-dot text-danger me-1"></i> Record Now (Microphone)
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="speech-mode-tab-content">
+                    
+                    <!-- OPTION A: CHOOSE AUDIO FILE -->
+                    <div class="tab-pane fade show active" id="tab-upload" role="tabpanel">
+                        <form id="form-speech-upload" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="input-audio-file" class="form-label text-light fw-bold">Choose Audio File:</label>
+                                <input type="file" id="input-audio-file" name="audio" class="form-control bg-darker text-white border-secondary-dark" accept=".wav,.mp3,.m4a,.flac,.ogg,.aiff">
+                                <small class="text-secondary d-block mt-1">Supported Formats: <code>.wav</code>, <code>.mp3</code>, <code>.m4a</code>, <code>.flac</code>, <code>.ogg</code> (Max size: 15 MB)</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="input-ref-transcript" class="form-label text-light fw-bold">Reference Transcript (Optional - for WER/CER Evaluation):</label>
+                                <textarea id="input-ref-transcript" name="reference_text" class="form-control bg-darker text-white border-secondary-dark" rows="3" placeholder="If you have the exact ground-truth reference text, paste it here to calculate real Word Error Rate (WER) and Character Error Rate (CER)..."></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="button" id="btn-clear-speech" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fa-solid fa-rotate-left me-1"></i> Clear Input
+                                </button>
+                                <button type="submit" id="btn-transcribe" class="btn btn-cyan px-4">
+                                    <i class="fa-solid fa-file-audio me-1"></i> Process Audio File
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- OPTION B: RECORD NOW (MICROPHONE LIVE SPEECH-TO-TEXT) -->
+                    <div class="tab-pane fade" id="tab-record" role="tabpanel">
+                        <div class="p-3 bg-darker rounded border border-dark text-center mb-3">
+                            <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+                                <button type="button" id="btn-start-record" class="btn btn-danger btn-lg px-4 rounded-pill">
+                                    <i class="fa-solid fa-circle me-1"></i> Start Recording
+                                </button>
+                                <button type="button" id="btn-stop-record" class="btn btn-outline-light btn-lg px-4 rounded-pill d-none" disabled>
+                                    <i class="fa-solid fa-square me-1"></i> Stop & Transcribe
+                                </button>
+                            </div>
+
+                            <div id="recording-status-box" class="d-none">
+                                <span class="badge bg-danger text-white pulse-glow px-3 py-2 fs-6 mb-2">
+                                    <i class="fa-solid fa-microphone me-1"></i> Recording Live Speech...
+                                </span>
+                                <div class="font-monospace text-amber h4 m-0" id="record-timer">00:00</div>
+                                <small class="text-secondary d-block mt-1">Speak into your microphone. Words will be generated in real-time in the transcript section below.</small>
+                            </div>
+
+                            <div id="recording-idle-box">
+                                <small class="text-secondary d-block"><i class="fa-solid fa-microphone text-cyan me-1"></i> Click <strong>"Start Recording"</strong> and speak. Real-time words will stream into the Transcript column.</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="input-rec-ref-transcript" class="form-label text-light fw-bold">Reference Transcript (Optional - for WER/CER Evaluation):</label>
+                            <textarea id="input-rec-ref-transcript" class="form-control bg-darker text-white border-secondary-dark" rows="2" placeholder="Paste ground-truth text here if evaluating live speech accuracy..."></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <button type="button" id="btn-clear-record" class="btn btn-outline-secondary btn-sm">
+                                <i class="fa-solid fa-rotate-left me-1"></i> Clear Input
+                            </button>
+                            <button type="button" id="btn-process-record" class="btn btn-cyan px-4">
+                                <i class="fa-solid fa-file-audio me-1"></i> Process Audio File
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Processing Spinner -->
+                <div id="speech-spinner" class="alert alert-info bg-darker border-cyan text-cyan text-center mt-3 py-3 d-none">
+                    <div class="spinner-border spinner-border-sm text-cyan me-2" role="status"></div>
+                    <strong>Processing speech recognition & calculating evidence metrics... Please wait.</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Info Metadata Card -->
+    <div class="col-lg-5">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-circle-info text-purple me-2"></i> Audio Metadata & Status
+                </h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-dark table-borderless text-light m-0 align-middle">
+                    <tbody>
+                        <tr>
+                            <td class="text-secondary fw-bold" style="width: 40%;">File / Source:</td>
+                            <td id="info-file-name" class="font-monospace text-cyan fw-bold">--</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary fw-bold">Input Type:</td>
+                            <td id="info-file-type" class="text-white">--</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary fw-bold">File Size:</td>
+                            <td id="info-file-size" class="font-monospace text-purple fw-bold">--</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary fw-bold">Audio Duration:</td>
+                            <td id="info-duration" class="font-monospace text-amber fw-bold">--</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary fw-bold">Processing Time:</td>
+                            <td id="info-proc-time" class="font-monospace text-green fw-bold">--</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary fw-bold">Processing Status:</td>
+                            <td id="info-status"><span class="badge bg-secondary">Awaiting Input</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 2: Transcript Results & Evaluation -->
+<div class="row g-4 mb-4">
+    <!-- Generated Transcript Card -->
+    <div class="col-lg-7">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-file-transcript text-cyan me-2"></i> Generated Transcript
+                </h6>
+                <button id="btn-copy-transcript" class="btn btn-sm btn-outline-cyan d-none">
+                    <i class="fa-solid fa-copy me-1"></i> Copy Transcript
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="speech-result-placeholder" class="text-center text-secondary py-5">
+                    <i class="fa-solid fa-microphone-lines fa-3x mb-3 opacity-50"></i>
+                    <p class="m-0">Choose an audio file or click <strong>"Record Now"</strong> to generate speech-to-text transcript words.</p>
+                </div>
+
+                <div id="speech-result-container" class="d-none">
+                    <div class="p-3 bg-darker rounded border border-cyan mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="text-cyan small fw-bold"><i class="fa-solid fa-quote-left me-1"></i> Speech Text Transcript:</label>
+                            <span id="live-streaming-indicator" class="badge bg-danger text-white d-none pulse-glow"><i class="fa-solid fa-circle me-1"></i> Live Stream</span>
+                        </div>
+                        <p class="text-white lead font-monospace m-0 fw-bold" id="output-transcript-text" style="min-height: 80px; word-break: break-word;">--</p>
+                    </div>
+
+                    <!-- Text Statistics Row -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <div class="p-2 bg-darker rounded border border-dark text-center">
+                                <small class="text-secondary d-block fw-bold">Sentences</small>
+                                <strong class="text-cyan h4 m-0 font-monospace" id="stat-speech-sentences">0</strong>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 bg-darker rounded border border-dark text-center">
+                                <small class="text-secondary d-block fw-bold">Words</small>
+                                <strong class="text-purple h4 m-0 font-monospace" id="stat-speech-words">0</strong>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 bg-darker rounded border border-dark text-center">
+                                <small class="text-secondary d-block fw-bold">Characters</small>
+                                <strong class="text-indigo h4 m-0 font-monospace" id="stat-speech-chars">0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cleaned Transcript Box -->
+                    <div class="p-2 bg-darker rounded border border-dark mb-3">
+                        <small class="text-secondary d-block fw-bold">Cleaned / Normalized Representation:</small>
+                        <small class="text-light font-monospace" id="output-speech-cleaned">--</small>
+                    </div>
+
+                    <!-- Speech Classification Result Card -->
+                    <div id="speech-classification-box" class="p-3 bg-darker rounded border border-success d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-success small fw-bold">
+                                <i class="fa-solid fa-brain me-1"></i> Classified Evidence Category:
+                            </span>
+                            <span id="speech-category-badge" class="badge bg-success fs-6 px-3 py-1">--</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center text-secondary small">
+                            <span>Confidence: <strong class="text-white font-monospace" id="speech-category-conf">--%</strong></span>
+                            <span>Model: <span class="text-info font-monospace" id="speech-category-model">--</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WER / CER Evaluation Card -->
+    <div class="col-lg-5">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-chart-pie text-amber me-2"></i> Accuracy & Error Evaluation (WER / CER)
+                </h6>
+            </div>
+            <div class="card-body d-flex flex-column justify-content-between">
+                <div id="wer-eval-container">
+                    <div class="p-3 bg-darker rounded border border-dark text-center py-4">
+                        <i class="fa-solid fa-vial text-secondary fa-2x mb-2 opacity-50"></i>
+                        <p class="text-secondary small m-0" id="wer-eval-message">Reference transcript not provided. WER/CER cannot be calculated for this input.</p>
+                    </div>
+                </div>
+
+                <div class="row g-2 mt-3 d-none" id="wer-eval-scores">
+                    <div class="col-6">
+                        <div class="p-3 bg-darker rounded border border-secondary-dark text-center">
+                            <span class="text-secondary small d-block font-weight-bold">Word Error Rate (WER)</span>
+                            <h3 class="m-0 text-amber font-monospace fw-bold" id="val-wer">0%</h3>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-darker rounded border border-secondary-dark text-center">
+                            <span class="text-secondary small d-block font-weight-bold">Char Error Rate (CER)</span>
+                            <h3 class="m-0 text-cyan font-monospace fw-bold" id="val-cer">0%</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-darker rounded border border-dark">
+                    <small class="text-cyan d-block font-weight-bold mb-1"><i class="fa-solid fa-graduation-cap me-1"></i> Academic Note:</small>
+                    <small class="text-secondary">Word Error Rate (WER) and Character Error Rate (CER) measure transcription accuracy by comparing hypothesis text against a ground-truth reference using Levenshtein edit distance.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 3: Academic Viva Explanation Box -->
+<div class="card bg-dark-card border-secondary-dark">
+    <div class="card-header bg-dark-header border-secondary-dark">
+        <h6 class="m-0 text-white font-weight-bold">
+            <i class="fa-solid fa-book-open text-purple me-2"></i> Academic Overview: Speech Processing Domain
+        </h6>
+    </div>
+    <div class="card-body">
+        <p class="text-light m-0">
+            <strong>Speech Processing</strong> in NLP deals with analyzing human speech signals and converting spoken language into structured textual representations using acoustic recognition algorithms. In investigation intelligence systems like TRACE-X, speech processing enables automatic transcription of audio recordings (e.g. emergency calls, suspect interviews, intercepted voice messages), preparing raw audio evidence for downstream text classification, entity extraction, and evidence correlation.
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initSpeechPage();
+    });
+</script>
+{% endblock %}

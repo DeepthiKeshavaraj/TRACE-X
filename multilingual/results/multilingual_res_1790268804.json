@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "भारी बारिश के कुछ समय बाद रेलवे स्टेशन के पास यह घटना हुई।",
+  "detected_language": "Hindi",
+  "language_code": "hi",
+  "confidence": 100.0,
+  "normalized_text": "भारी बारिश के कुछ समय बाद रेलवे स्टेशन के पास यह घटना हुई।",
+  "translated_text": "The incident took place near the railway station shortly after heavy rains.",
+  "token_count": 23,
+  "char_count": 58,
+  "processing_time_seconds": 1.111
+}

@@ -1,0 +1,35 @@
+{
+    "success": true,
+    "dataset_found": true,
+    "dataset_name": "CoNLL-2003 English NER",
+    "train_sentences": 14041,
+    "valid_sentences": 3250,
+    "test_sentences": 3453,
+    "total_sentences": 20744,
+    "train_tokens": 203621,
+    "valid_tokens": 51362,
+    "test_tokens": 46435,
+    "total_tokens": 301418,
+    "train_entities": 23499,
+    "valid_entities": 5942,
+    "test_entities": 5648,
+    "total_entities": 35089,
+    "entity_type_counts": {
+        "PERSON": 10059,
+        "ORGANIZATION": 9323,
+        "LOCATION": 10645,
+        "MISCELLANEOUS": 5062
+    },
+    "malformed_records": 0,
+    "label_distribution": {
+        "B-ORG": 6321,
+        "O": 169578,
+        "B-MISC": 3438,
+        "B-PER": 6600,
+        "I-PER": 4528,
+        "B-LOC": 7140,
+        "I-ORG": 3704,
+        "I-MISC": 1155,
+        "I-LOC": 1157
+    }
+}

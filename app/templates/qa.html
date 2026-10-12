@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}TRACE-X — Evidence Question Answering System{% endblock %}
+{% block page_title %}Question Answering System (QA){% endblock %}
+
+{% block content %}
+<!-- Include standalone QA CSS stylesheet -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/qa.css') }}">
+
+<!-- Module Banner -->
+<div class="card bg-dark-card border-secondary-dark mb-4">
+    <div class="card-body p-4 position-relative overflow-hidden">
+        <div class="d-flex align-items-center mb-2">
+            <span class="badge bg-purple text-white font-weight-bold uppercase-track me-2">NLP Module 05</span>
+            <span class="text-secondary">Extractive Information Retrieval & Evidence Answering</span>
+        </div>
+        <h3 class="fw-bold text-white mb-2">Question Answering System (QA)</h3>
+        <p class="text-secondary mb-0">Ask natural language questions against unstructured investigation evidence text. The QA system extracts exact answer spans and highlights supporting evidence passages using sentence similarity and entity span alignment.</p>
+    </div>
+</div>
+
+<!-- Main Interactive QA Section -->
+<div class="row g-4 mb-4">
+    <!-- Input Form Column -->
+    <div class="col-lg-6">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-file-invoice text-cyan me-2"></i> Evidence & Question Input
+                </h6>
+                <button type="button" id="btn-load-sample-evidence" class="btn btn-sm btn-outline-cyan">
+                    <i class="fa-solid fa-file-import me-1"></i> Load Sample Evidence
+                </button>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <!-- Context Text Area Header & Upload Controls -->
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                    <label for="input-qa-context" class="form-label text-light fw-bold m-0">Evidence Text Context:</label>
+                    <div class="d-flex gap-2">
+                        <label for="upload-qa-file" class="btn btn-sm btn-outline-cyan m-0 py-1 px-2">
+                            <i class="fa-solid fa-file-arrow-up me-1"></i> Upload File (.txt, .pdf, .docx)
+                        </label>
+                        <label for="upload-qa-image" class="btn btn-sm btn-outline-purple m-0 py-1 px-2">
+                            <i class="fa-solid fa-file-image me-1"></i> Upload Image (OCR)
+                        </label>
+                        <input type="file" id="upload-qa-file" class="d-none" multiple accept=".txt,.pdf,.docx,.doc">
+                        <input type="file" id="upload-qa-image" class="d-none" multiple accept=".png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff">
+                    </div>
+                </div>
+                <div id="qa-upload-status"></div>
+                <div class="mb-3">
+                    <textarea id="input-qa-context" class="form-control qa-input-box p-3" rows="6" placeholder="Paste investigation report, transcript, or upload evidence files/images... e.g. 'John Smith, an employee of Microsoft, visited Chennai on 12 March 2026...'"></textarea>
+                </div>
+
+                <!-- Sample Question Shortcuts -->
+                <div class="mb-3">
+                    <label class="form-label text-secondary small text-uppercase font-weight-bold">Quick Sample Questions:</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary qa-sample-q-btn" data-q="Where did John Smith visit?">
+                            <i class="fa-solid fa-location-dot me-1"></i> Where did John Smith visit?
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary qa-sample-q-btn" data-q="When did John Smith visit Chennai?">
+                            <i class="fa-solid fa-calendar me-1"></i> When did John Smith visit Chennai?
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary qa-sample-q-btn" data-q="Which organization employed John Smith?">
+                            <i class="fa-solid fa-building me-1"></i> Which organization employed John Smith?
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary qa-sample-q-btn" data-q="What is the capital of France?">
+                            <i class="fa-solid fa-circle-question me-1"></i> Absent Answer Test
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question Input Field -->
+                <div class="mb-3 flex-grow-1">
+                    <label for="input-qa-question" class="form-label text-light fw-bold">Enter Your Question:</label>
+                    <input type="text" id="input-qa-question" class="form-control qa-input-box p-3" placeholder="e.g., 'Where did John Smith visit?' or 'Which organization employed John Smith?'">
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <button type="button" id="btn-clear-qa" class="btn btn-outline-secondary px-3">
+                        <i class="fa-solid fa-rotate-left me-1"></i> Clear
+                    </button>
+                    <button type="button" id="btn-find-answer" class="btn btn-cyan px-4 py-2 font-weight-bold">
+                        <i class="fa-solid fa-magnifying-glass-location me-2"></i> Find Answer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output & Answer Display Column -->
+    <div class="col-lg-6">
+        <div class="card bg-dark-card border-secondary-dark h-100">
+            <div class="card-header bg-dark-header border-secondary-dark d-flex justify-content-between align-items-center">
+                <h6 class="m-0 text-white font-weight-bold">
+                    <i class="fa-solid fa-bullseye text-cyan me-2"></i> Answer & Supporting Evidence
+                </h6>
+                <span id="qa-status-badge" class="badge bg-secondary">Awaiting Input</span>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <!-- Processing Spinner -->
+                <div id="qa-spinner" class="alert alert-info bg-darker border-cyan text-cyan text-center py-3 d-none mb-3">
+                    <div class="spinner-border spinner-border-sm text-cyan me-2" role="status"></div>
+                    <strong>Analyzing evidence & extracting answer span... Please wait.</strong>
+                </div>
+
+                <!-- Placeholder when idle -->
+                <div id="qa-placeholder" class="text-center text-secondary py-5 my-auto">
+                    <i class="fa-solid fa-comment-dots fa-3x mb-3 opacity-50"></i>
+                    <p class="m-0">Enter evidence text and ask a question to extract answers and supporting context passages.</p>
+                </div>
+
+                <!-- Results Container -->
+                <div id="qa-results-container" class="d-none d-flex flex-column h-100">
+                    <!-- Extracted Answer Box -->
+                    <div class="qa-answer-box p-3 mb-3">
+                        <label class="text-cyan small font-weight-bold d-block mb-1">
+                            <i class="fa-solid fa-circle-check me-1"></i> Extracted Answer:
+                        </label>
+                        <h4 class="text-white fw-bold font-monospace m-0" id="qa-answer-text">--</h4>
+                    </div>
+
+                    <!-- Supporting Evidence Passage -->
+                    <div class="qa-evidence-box p-3 mb-3 flex-grow-1">
+                        <label class="text-secondary small font-weight-bold d-block mb-1">
+                            <i class="fa-solid fa-quote-left text-amber me-1"></i> Supporting Evidence Passage:
+                        </label>
+                        <p class="text-light lead font-monospace m-0 fs-6" id="qa-evidence-text">--</p>
+                    </div>
+
+                    <!-- Metadata Table -->
+                    <div class="table-responsive rounded border border-dark">
+                        <table class="table table-dark table-borderless table-sm m-0 align-middle">
+                            <tbody>
+                                <tr>
+                                    <td class="text-secondary small fw-bold px-3 py-2">Answering Method / Model:</td>
+                                    <td class="px-3 py-2"><span class="badge badge-qa-method font-monospace" id="qa-method-name">--</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary small fw-bold px-3 py-2">Relevance / Confidence:</td>
+                                    <td class="px-3 py-2"><strong class="text-green font-monospace" id="qa-confidence-val">--</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Academic Architecture Explanation Card -->
+<div class="card bg-dark-card border-secondary-dark">
+    <div class="card-header bg-dark-header border-secondary-dark">
+        <h6 class="m-0 text-white font-weight-bold">
+            <i class="fa-solid fa-graduation-cap text-purple me-2"></i> Academic Architecture: Extractive Question Answering
+        </h6>
+    </div>
+    <div class="card-body small text-secondary">
+        <p class="mb-2"><strong>Extractive Question Answering</strong> locates the exact text span within a reference context that answers a natural language question. Unlike generative models, extractive QA does not hallucinate new facts, guaranteeing that every answer is strictly backed by verifiable evidence.</p>
+        <div class="p-3 bg-darker rounded border border-dark">
+            <strong class="text-cyan d-block mb-1"><i class="fa-solid fa-sitemap me-1"></i> Execution Pipeline:</strong>
+            <div class="font-monospace text-light">
+                Evidence Context → Sentence Segmentation → TF-IDF Similarity Ranking → Entity Category Match → Exact Answer Span Extraction
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include standalone QA JavaScript handler -->
+<script src="{{ url_for('static', filename='js/qa.js') }}"></script>
+{% endblock %}

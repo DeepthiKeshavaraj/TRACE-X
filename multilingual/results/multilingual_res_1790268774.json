@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "அடையாளம் தெரியாத ஒருவர் பிரதான நுழைவாயில் வழியாக கட்டிடத்திற்குள் சென்றதாக பாதுகாப்பு அதிகாரி தெரிவித்தார்.",
+  "detected_language": "Tamil",
+  "language_code": "ta",
+  "confidence": 100.0,
+  "normalized_text": "அடையாளம் தெரியாத ஒருவர் பிரதான நுழைவாயில் வழியாக கட்டிடத்திற்குள் சென்றதாக பாதுகாப்பு அதிகாரி தெரிவித்தார்.",
+  "translated_text": "The security official said that an unidentified person entered the building through the main entrance.",
+  "token_count": 45,
+  "char_count": 107,
+  "processing_time_seconds": 1.203
+}

@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "original_evidence": "விசாரணை அதிகாரிகள் சோதனையில் ஈடுபட்டனர்.",
+  "detected_language": "Tamil",
+  "language_code": "ta",
+  "confidence": 100.0,
+  "normalized_text": "விசாரணை அதிகாரிகள் சோதனையில் ஈடுபட்டனர்.",
+  "token_count": 14,
+  "char_count": 40,
+  "processing_time_seconds": 0.147
+}

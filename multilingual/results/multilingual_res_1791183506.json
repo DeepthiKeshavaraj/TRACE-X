@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "Police investigators arrived at the scene and initiated a detailed examination of the evidence.",
+  "detected_language": "English",
+  "language_code": "en",
+  "confidence": 100.0,
+  "normalized_text": "police investigators arrived at the scene and initiated a detailed examination of the evidence.",
+  "translated_text": "Police investigators arrived at the scene and initiated a detailed examination of the evidence.",
+  "token_count": 14,
+  "char_count": 95,
+  "processing_time_seconds": 0.023
+}

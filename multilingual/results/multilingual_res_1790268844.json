@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "original_evidence": "Las autoridades recogieron varios documentos y dispositivos electrónicos de la oficina.",
+  "detected_language": "Spanish",
+  "language_code": "es",
+  "confidence": 100.0,
+  "normalized_text": "las autoridades recogieron varios documentos y dispositivos electrónicos de la oficina.",
+  "translated_text": "Authorities collected several documents and electronic devices from the office.",
+  "token_count": 11,
+  "char_count": 87,
+  "processing_time_seconds": 1.633
+}
